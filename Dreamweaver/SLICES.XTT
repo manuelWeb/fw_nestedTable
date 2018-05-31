@@ -1657,7 +1657,7 @@ function WriteTable(curSlices, indent) {
 	
 	if (needTable) {
 		if (firstTable) {
-			WRITE_HTML('<table style="display: inline-table;" ');
+			WRITE_HTML('<table ');
 			if( exportDoc.tableAlignment != "left" ) {
 				WRITE_HTML("align=\"", exportDoc.tableAlignment, "\" ");
 			}
