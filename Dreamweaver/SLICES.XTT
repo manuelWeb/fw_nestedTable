@@ -18,10 +18,10 @@ fw.xhtmlOutput = newXhtmlFormat;
 
 
 var doHeader = true;
-doHeader = exportDoc.generateHeader; 
+doHeader = exportDoc.generateHeader;
 if (!doHeader) doComments = false;
 // When HTML is generated to a file, generateHeader is true.
-// When HTML is generated for the clipboard, (or DW3 metafile) 
+// When HTML is generated for the clipboard, (or DW3 metafile)
 // generateHeader is false.
 
 // When doComments is set to "true" the WRITE_HTML_COMMENT and WRITE_JS_COMMENT functions
@@ -48,12 +48,12 @@ function WRITE_CSS() {
 // Note - if we have menus, then some code needs to go in the head, and some needs
 // to go in the body, so we generate the header anyway.  jba.
 
-// Declare variables for processing Behaviors.	
+// Declare variables for processing Behaviors.
 var kActionStatusMessage = 1;
 var kActionSwapImage = 2;
 var kActionButtonDown = 4;
 var kActionSwapImageRestore = 5;
-var kActionButtonHighlight = 6; 
+var kActionButtonHighlight = 6;
 var kActionButtonRestore = 7;
 var kActionPopupMenu = 9;
 var kActionCustom = 10;
@@ -86,7 +86,7 @@ function RemoveEscapes(str) {
 	var i = 0;
 	var size = str.length;
 	var output = "";
-	
+
 	for (i; i < size; ++i) {
 		if (str.charAt(i) == '%') {
 			// skip past
@@ -95,7 +95,7 @@ function RemoveEscapes(str) {
 			output = output + str.charAt(i);
 		}
 	}
-	
+
 	return output;
 }
 
@@ -116,8 +116,8 @@ function CellName(curSlices, row, col) {
 			cellName = "n"+cellName;
 		}
 	}
-	
-	if (cellName!="") return(cellName);	 
+
+	if (cellName!="") return(cellName);
 
 	var prefix;
 	if (!curSlices) return("nullCellName");
@@ -155,24 +155,24 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 	var hideMenuOnMouseOut = false;
 	var snd = false;
 	var menuTimeout = 0;
-	
+
 	// Translate Behaviors into JavaScript.
 	for (var i=0; i<theCurBehaviors.numberOfBehaviors; i++) {
 		curBehavior = theCurBehaviors[i];
-		
+
 		if (curBehavior.ignoreFlag) continue;
 		// Check for erase on mouse out status messages.
 		if (curBehavior.action == kActionStatusMessage) {
 			if (curBehavior.restoreOnMouseout) eraseStatOnMouseOut=true;
 		}
-		
+
 		// Check for hide menu on mouse out.
 		if (curBehavior.action == kActionPopupMenu && curBehavior.event == kEventMouseOver) {
 			hideMenuOnMouseOut= curBehavior.hideOnMouseout;
 		}
 
 		if (curBehavior.event != targetEvent) continue;
-		
+
 		if (curBehavior.action == kActionStatusMessage) {
 			var statMsg = curBehavior.statusText;
 			var curStat = "";
@@ -213,7 +213,7 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 				var yPos = curBehavior.vertOffset + mapYOffset;
 				curMenu = "MM_showMenu(window."+menu+","+xPos+","+yPos+",null,'" + theCellName + "');";
 			}
-			
+
 			javaScript += curMenu;
 			continue;
 		}
@@ -221,15 +221,15 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 			swapRestore = true;
 			continue;
 		}
-		
+
 		if (curBehavior.action == kActionButtonRestore) {
 			buttonRestore = true;
 			continue;
 		}
-		
+
 		var swapRow = curBehavior.targetRowNum;
 		var swapCol = curBehavior.targetColumnNum;
-		var swapFrame = curBehavior.targetFrameNum; 
+		var swapFrame = curBehavior.targetFrameNum;
 		var swapTable = curBehavior.targetTable;
 		var fileName;
 		if (!swapTable) {
@@ -245,7 +245,7 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 
 
 		var cellName = CellName(swapTable, swapRow,swapCol);
-		
+
 		// Translate button Behaviors into JavaScript.
 		if (curBehavior.action == kActionButtonDown) {
 			//MM_nbGroup(event, groupName, imgName, downSrc...preloadMarker)
@@ -263,7 +263,7 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 					var f = curBehavior.dhTargetFrameNum;
 					highlightName = swapTable.imagesDirPath + swapTable[swapRow][swapCol].getFrameFileName(f) + swapTable[swapRow][swapCol].imageSuffix
 				}
-			}			
+			}
 			nbHighlight += "'" + cellName + "','" + fileName + "','" + highlightName +"',";
 			if (curBehavior.preload) nbHighlightPreload = true;
 			continue;
@@ -272,7 +272,7 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 		if (curBehavior.action == kActionSwapImage) {
 			swap += "'" +cellName +"','','" + fileName + "',";
 			continue;
-		}		
+		}
 	}
 	if (nbDown != "" &&  targetEvent == kEventOnLoad) {
  		// Eat it.  Special handling for this one.
@@ -308,13 +308,13 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 		javaScript += "MM_displayStatusMsg(' ');" ;
 		stat = true;
 	}
-	
+
 	// Start timer to hide menus onMouseOut.
 	if (hideMenuOnMouseOut && targetEvent == kEventMouseOut) {
 		if (exportDoc.cssPopupMenus) {
 			for (var i=0; i<theCurBehaviors.numberOfBehaviors; i++) {
 			curBehavior = theCurBehaviors[i];
-			
+
 			if (curBehavior.ignoreFlag) continue;
 			if (curBehavior.action == kActionPopupMenu) {
 				menuTimeout = curBehavior.hideTimeout;
@@ -334,7 +334,7 @@ function ProcessEvent(theCellName,theCurBehaviors, targetEvent, x, y, mapXOffset
 
 // Determine and process Behaviors in the document.
 function ProcessBehavior(theCellName,theCurBehaviors, x, y, mapXOffset, mapYOffset) {
-	
+
 	javaOver = ProcessEvent(theCellName,theCurBehaviors, kEventMouseOver, x, y, mapXOffset, mapYOffset);
 	javaOut = ProcessEvent(theCellName,theCurBehaviors, kEventMouseOut, x, y, mapXOffset, mapYOffset);
 	javaClick = ProcessEvent(theCellName,theCurBehaviors, kEventOnClick, x, y, mapXOffset, mapYOffset);
@@ -352,18 +352,18 @@ function NavLoadInit(theCurBehaviors, myCellName) {
 	// Translate Behaviors into JavaScript.
 	for (var i=0; i<theCurBehaviors.numberOfBehaviors; i++) {
 		curBehavior = theCurBehaviors[i];
-		
+
 		if (curBehavior.ignoreFlag) continue;
-		
+
 		if (curBehavior.event != kEventOnLoad) continue;
-		
+
 		if (curBehavior.action != kActionButtonDown) {
 			continue;
 		}
-		
+
 		var swapRow = curBehavior.targetRowNum;
 		var swapCol = curBehavior.targetColumnNum;
-		var swapFrame = curBehavior.targetFrameNum; 
+		var swapFrame = curBehavior.targetFrameNum;
 		var swapTable = curBehavior.targetTable;
 		var fileName;
 		if (!swapTable) {
@@ -404,18 +404,18 @@ function DoPreload(curBeh, swapRow, swapCol, swapFrame, swapTable) {
 		fileName = curBeh.href;
 	} else {
 		curFile = swapTable[swapRow][swapCol].getFrameFileName(swapFrame);
-		if (curFile) 
+		if (curFile)
 			fileName = swapTable.imagesDirPath + curFile + swapTable[swapRow][swapCol].imageSuffix;
 	}
 	PreloadFile(fileName);
-	
+
 	if (curBeh.action == kActionButtonDown &&
 		curBeh.event == kEventOnLoad) {
 		var baseFile = swapTable[swapRow][swapCol].getFrameFileName(0);
 		fileName = swapTable.imagesDirPath + baseFile + swapTable[swapRow][swapCol].imageSuffix;
 		PreloadFile(fileName);
 	}
-	
+
 	if (curBeh.downHighlight) {
 		if (curBeh.hasDhHref) {
 			fileName = curBeh.dhHref;
@@ -493,7 +493,7 @@ function DoSound(curBeh) {
 function DoFile(curBeh) {
 	var swapRow = curBeh.targetRowNum;
 	var swapCol = curBeh.targetColumnNum;
-	var swapFrame = curBeh.targetFrameNum; 
+	var swapFrame = curBeh.targetFrameNum;
 	var swapTable = curBeh.targetTable;
 	if (!swapTable) return;
 	var fileName = swapTable[swapRow][swapCol].getFrameFileName(0);
@@ -502,7 +502,7 @@ function DoFile(curBeh) {
 	}
 }
 
-// Examine all behaviors to determine what actions are present. 
+// Examine all behaviors to determine what actions are present.
 // Determine which files to pre-cache.
 var FWLoadInit = "";
 function DoFileAndPreload(curSlices) {
@@ -608,7 +608,7 @@ DoFileAndPreload(slices);
 
 var doFullHeader = doHeader;
 if (popupMenus.length>0) doHeader = true;
-	
+
 if (doHeader) {
 
 	if (!fw.xhtmlOutput){
@@ -617,12 +617,12 @@ if (doHeader) {
 		WRITE_HTML("\"http://www.w3.org/TR/html4/loose.dtd\">\n");
 		WRITE_HTML("<!-- saved from url=(0014)about:internet -->\n");
 		WRITE_HTML("<html>\n");
-	} else {		
+	} else {
 		// XHTML FORMAT
-		
+
 		// afinnell - no longer writing out <?xml> tag 'cause its optional and it freaks Windows/IE6 out
 		//	and causes bugs in our CSS menus.
-		//WRITE_HTML("<?xml version=\"1.0\" encoding=\"", fw.textOutputEncoding, "\"?>\n" ); 
+		//WRITE_HTML("<?xml version=\"1.0\" encoding=\"", fw.textOutputEncoding, "\"?>\n" );
 		WRITE_HTML("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
 		WRITE_HTML("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
 		WRITE_HTML("<!-- saved from url=(0014)about:internet -->\n");
@@ -638,15 +638,15 @@ if (doHeader) {
 
 	if (!fw.xhtmlOutput){
 		// HTML FORMAT
-		WRITE_HTML("<meta http-equiv=\"Content-Type\" content=\"text/html;"); 
+		WRITE_HTML("<meta http-equiv=\"Content-Type\" content=\"text/html;");
 		if (fw.textOutputEncoding == "utf-8"){
-			WRITE_HTML(" charset=", fw.textOutputEncoding);	
+			WRITE_HTML(" charset=", fw.textOutputEncoding);
 		}
 		WRITE_HTML("\">\n");
 		if (doComments) WRITE_HTML("<meta name=\"description\" content=\"FW 8 DW 8 HTML\">\n");
 	} else {
 		// XHTML FORMAT
-		WRITE_HTML("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=", fw.textOutputEncoding, "\" />\n"); 
+		WRITE_HTML("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=", fw.textOutputEncoding, "\" />\n");
 		if (doComments) WRITE_HTML("<meta name=\"description\" content=\"FW 8 DW 8 XHTML\" />\n");
 
 		// to get around NS6/mozilla's strict implementation of table cells, drop in this
@@ -677,8 +677,8 @@ if (doHeader) {
 		}
 		return output;
 	}
-	
-	if (hasStatusMessage || sounds.length > 0 || hasDown || hasSwap || hasRestore || filesToPreload.length > 0 || 
+
+	if (hasStatusMessage || sounds.length > 0 || hasDown || hasSwap || hasRestore || filesToPreload.length > 0 ||
 	    (popupMenus.length > 0 && !exportDoc.cssPopupMenus)) {
 		// Begin Script. Hide Script from non-javascript-enabled browsers.
 
@@ -795,19 +795,19 @@ if (doHeader) {
 		}
 
 		/*----------------- END JavaScript functions used in the HTML -----------------*/
-		
+
 		if (!exportDoc.cssPopupMenus) {
 			/*----------------- BEGIN JavaScript Menus used in the HTML -----------------*/
 			function WriteMenu(menu, menuItems, text, indent, menuName, hide) {
 				var j;
-				if (!wroteAnyMenus) { 
+				if (!wroteAnyMenus) {
 					WRITE_HTML("function mmLoadMenus() {\n");
 					WRITE_HTML("  if (window." + menuName + ") return;\n");
 					wroteAnyMenus = true;
-				}	
+				}
 				var hasSubMenus = false;
 
-				// First, write out any submenus. 
+				// First, write out any submenus.
 				var ieWidth = 120;
 				var curSubMenu = 1;
 				for (j in menuItems) {
@@ -817,7 +817,7 @@ if (doHeader) {
 						var name = menuName + "_" + curSubMenu;
 						curSubMenu++;
 						menuItem.subMenuName = name;
-						WriteMenu(menu, menuItem.subMenu, 
+						WriteMenu(menu, menuItem.subMenu,
 								menuItem.name, indent+"  ", name, hide);
 						hasSubMenus = true;
 					}
@@ -829,14 +829,14 @@ if (doHeader) {
 					menuWidth = ieWidth + 2*menu.menuItemPadding + menu.textIndent;
 				}
 				var menuArgs = ',' + menuWidth + ',' + menu.menuHeight + ',"' + menu.textFamily +
-						'",' + menu.textSize + 
-						',"' + menu.textUpColor + '","' + menu.textOverColor + '","' + 
+						'",' + menu.textSize +
+						',"' + menu.textUpColor + '","' + menu.textOverColor + '","' +
 						menu.cellUpColor + '","' + menu.cellOverColor + '","' +
 						menu.textAlignment + '","' + menu.vertAlignment + '",' +
 						menu.menuItemPadding + ',' + menu.menuItemSpacing + ',' +
 						menu.hideTimeout + ',' + menu.horzSubmenuOffset + ',' +
 						menu.vertSubmenuOffset + ',' + menu.submenuRelativeToItem + ',' +
-						menu.opaqueBackground + '';  
+						menu.opaqueBackground + '';
 				if( text == '"root"' ) {
 					menuArgs += ',' + menu.vertical + '';
 				} else {
@@ -854,9 +854,9 @@ if (doHeader) {
 							var doLink = "\"location='" + menuItem.url + "'\"";
 							if (menuItem.target) {
 								doLink = "\"window.open('" + menuItem.url + "', '" + menuItem.target + "');\"";
-							} 
+							}
 							WRITE_HTML("," + doLink);
-						} 
+						}
 						WRITE_HTML(");\n");
 					} else if (menuItem.name) {
 						WRITE_HTML(indent+menuName+".addMenuItem(" + escapeJSString(menuItem.name));
@@ -864,11 +864,11 @@ if (doHeader) {
 							var doLink = "\"location='" + menuItem.url + "'\"";
 							if (menuItem.target) {
 								doLink = "\"window.open('" + menuItem.url + "', '" + menuItem.target + "');\"";
-							} 
+							}
 							WRITE_HTML("," + doLink);
-						} 
+						}
 						WRITE_HTML(");\n");
-					} 	
+					}
 				}
 				var theMenu = indent+" "+menuName+".";
 				if (!menu.textOnly) {
@@ -881,7 +881,7 @@ if (doHeader) {
 				if (menu.textItalic) {
 					WRITE_HTML(theMenu + 'fontStyle="italic";\n');
 				}
-					
+
 				if (hide) {
 					WRITE_HTML(theMenu + 'hideOnMouseOut=true;\n');
 				} else {
@@ -912,16 +912,16 @@ if (doHeader) {
 			if (wroteAnyMenus) {
 				WRITE_HTML("\n  "+lastMenu+".writeMenus();\n");
 				WRITE_HTML("} // mmLoadMenus()\n\n");
-			}				
+			}
 
 			/*----------------- END JavaScript Menus used in the HTML -----------------*/
 		}
-		
+
 		// Stop hiding script from non-javascript-enabled browsers. End script.
-		WRITE_HTML("//-->\n");	  
+		WRITE_HTML("//-->\n");
 		WRITE_HTML("</script>\n");
 	}
-	
+
 	function NewOrigin(x,y) {
 		var o = new Object();
 		o.x = x;
@@ -937,10 +937,10 @@ if (doHeader) {
 				return curBehavior;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	function GetMenuContainerName(menu) {
 		return "MMMenuContainer"+ DateToUniqueID(menu.creationDate) + "_" + GenerateUniqueID(menu);
 	}
@@ -957,34 +957,34 @@ if (doHeader) {
 		}
 		return menuItemStyleSheetName + "Style" + menuName;
 	}
-	
+
 	function MenuItemIDStyleSheetName(menuName, index) {
 		return menuName + "_Item_" + index;
 	}
-	
+
 	function MenuItemSpanStyleSheetName(menuName) {
 		return "MMMenuItemSpan" + menuName;
 	}
 
 	function MenuItemArrowStyleSheetName(menuName) {
-		return "MMArrowStyle" + menuName;	
+		return "MMArrowStyle" + menuName;
 	}
-	
+
 	function CalcMenuItemWidth(menu, menuItems, isFirstItem, isHorizontal) {
 		var ieWidth = 120;
-		
+
 		// now go through and check for submenus.  If any exist, add space for the arrow
 		for (var j in menuItems) {
 			var menuItem = menuItems[j];
 
 			ieWidth = menuItem.maxTextWidth;
 		}
-		
+
 		var menuWidth = menu.menuWidth;
 		if( !menu.overrideMenuWidth && menu.textOnly) {
 			menuWidth = ieWidth + 2*menu.menuItemPadding + menu.textIndent + 2*menu.borderSize;
 		}
-		
+
 		return menuWidth;
 	}
 
@@ -996,14 +996,14 @@ if (doHeader) {
 				menuItemHeight += menu.borderSize; // for the top border (highlight)
 			}
 		}
-		
+
 		return menuItemHeight;
 	}
-		
+
 	function CalcMenuWidth(menu, menuItems, isTopLevel) {
 		var menuItemWidth = CalcMenuItemWidth(menu, menuItems, true, isTopLevel && !menu.vertical);
 		var menuWidth = menuItemWidth;
-		
+
 		if( isTopLevel && !menu.vertical ) { //handle horizontal menus
 			var spacingWidth = (menuItems.length-1) * menu.menuItemSpacing;
 			menuWidth = menuItemWidth * menuItems.length + spacingWidth;
@@ -1014,11 +1014,11 @@ if (doHeader) {
 
 		return menuWidth;
 	}
-	
+
 	function CalcMenuHeight(menu, menuItems, isTopLevel) {
 		var menuItemHeight = CalcMenuItemHeight(menu, menuItems, true, isTopLevel && !menu.vertical);
 		var menuHeight = menuItemHeight;
-		
+
 		if( !isTopLevel || menu.vertical ) { //handle vertical menus
 			var spacingHeight = (menuItems.length-1) * menu.menuItemSpacing;
 			var restOfItemsHeight = CalcMenuItemHeight(menu, menuItems, false, false) * (menuItems.length-1);
@@ -1030,7 +1030,7 @@ if (doHeader) {
 
 		return menuHeight;
 	}
-	
+
 	function CalcMenuItemTop(menu, menuItems, parentMenuTop, menuItemIndex, isTopLevel) {
 		var menuItemTop = parentMenuTop;
 		//if(menu.textOnly) {
@@ -1052,10 +1052,10 @@ if (doHeader) {
 				menuItemTop += (menuItemIndex-1) * CalcMenuItemHeight(menu, menuItems, false, false);
 			}
 		}
-		
+
 		return menuItemTop;
 	}
-	
+
 	function CalcMenuItemLeft(menu, menuItems, parentMenuLeft, menuItemIndex, isTopLevel) {
 		var menuItemLeft = parentMenuLeft;
 		//if(menu.textOnly) {
@@ -1063,7 +1063,7 @@ if (doHeader) {
 		//}
 		if( isTopLevel && !menu.vertical ) { //handle horizontal menus
 			var spacingWidth = menuItemIndex * menu.menuItemSpacing;
-			var borderWidth = 0; 
+			var borderWidth = 0;
 			if(menu.textOnly) {
 				borderWidth = menuItemIndex * menu.borderSize;
 			}
@@ -1077,10 +1077,10 @@ if (doHeader) {
 
 		return menuItemLeft;
 	}
-	
+
 	function CalcSubMenuLeft(menu, parentMenuItems, parentMenuLeft, menuItemIndex, parentIsTopLevel) {
 		var menuLeft = 0;
-		
+
 		if( menu.submenuRelativeToItem ) {
 			var menuItemLeft = CalcMenuItemLeft(menu, parentMenuItems, parentMenuLeft, menuItemIndex, parentIsTopLevel);
 			var menuItemWidth = CalcMenuItemWidth(menu, parentMenuItems, menuItemIndex == 0, false);
@@ -1089,21 +1089,21 @@ if (doHeader) {
 			}
 			menuLeft =  menuItemLeft + menuItemWidth;
 		} else {
-			menuLeft = parentMenuLeft + CalcMenuWidth(menu, parentMenuItems, parentIsTopLevel); 
+			menuLeft = parentMenuLeft + CalcMenuWidth(menu, parentMenuItems, parentIsTopLevel);
 		}
-		
+
 		return menuLeft + menu.horzSubmenuOffset;
 	}
 
 	function CalcSubMenuTop(menu, parentMenuItems, parentMenuTop, menuItemIndex, parentIsTopLevel) {
 		var menuTop = 0;
-		
+
 		if( menu.submenuRelativeToItem ) {
 			menuTop = CalcMenuItemTop(menu, parentMenuItems, parentMenuTop, menuItemIndex, parentIsTopLevel);
 		} else {
 			menuTop = parentMenuTop;
 		}
-		
+
 		return menuTop + menu.vertSubmenuOffset;
 	}
 
@@ -1111,13 +1111,13 @@ if (doHeader) {
 		var currentOrigin = NewOrigin(oldCurrentOrigin.x, oldCurrentOrigin.y);
 		var parentMenuWidth = CalcMenuWidth(menu, menuItems, isTopLevel);
 		var currentMenuItemIndex = 0;
-		
+
 		for (var j in menuItems) {
 			var menuItem = menuItems[j];
 			if (menuItem.subMenu && menuItem.subMenu.length > 0) {
 				var subMenuLeft = CalcSubMenuLeft(menu, menuItems, parentOrigin.x, currentMenuItemIndex, isTopLevel);
 				var subMenuTop = CalcSubMenuTop(menu, menuItems, parentOrigin.y, currentMenuItemIndex, isTopLevel);
-				
+
 				// if any of the submenus go further top or left, make them the current origin
 				if( subMenuLeft < currentOrigin.x ) {
 					currentOrigin.x = subMenuLeft;
@@ -1125,7 +1125,7 @@ if (doHeader) {
 				if( subMenuTop < currentOrigin.y ) {
 					currentOrigin.y = subMenuTop;
 				}
-				
+
 				var subMenuOrigin = NewOrigin(subMenuLeft, subMenuTop);
 				currentOrigin = CalcMenuOrigin(menu, menuItem.subMenu, subMenuOrigin, false, currentOrigin);
 			}
@@ -1134,7 +1134,7 @@ if (doHeader) {
 
 		return currentOrigin;
 	}
-	
+
 	function CalcTopLevelMenuOrigin(menu, menuItems) {
 		var topLevelMenuOrigin = CalcMenuOrigin(menu, menuItems, NewOrigin(0,0), true, NewOrigin(0,0));
 		if( topLevelMenuOrigin.x < 0 ) {
@@ -1145,10 +1145,10 @@ if (doHeader) {
 		}
 		return topLevelMenuOrigin;
 	}
-	
+
 	function WriteMenuItemStyleSheet(menu, menuItems, menuName, isHorizontal, isFirst) {
 		var menuItemStyleSheetName = MenuItemStyleSheetName(menuName, isHorizontal, isFirst);
-		
+
 		WRITE_CSS(".", menuItemStyleSheetName, " {\n");
 		WRITE_CSS("/* This class determines the general characteristics of the menu items in menu ", menuName, " */\n");
 		if (menu.textOnly) {
@@ -1162,7 +1162,7 @@ if (doHeader) {
 			//} else {
 			//	WRITE_CSS("\tborder-left:0px;\n");
 			//}
-			
+
 			WRITE_CSS("\tborder-bottom:", menu.borderSize, "px solid ", menu.shadowColor, ";\n");
 			WRITE_CSS("\tborder-right:", menu.borderSize, "px solid ", menu.shadowColor, ";\n");
 		}
@@ -1186,52 +1186,52 @@ if (doHeader) {
 		WRITE_CSS("\twidth:", menuItemWidth, "px;\n");
 		WRITE_CSS("\theight:", menuItemHeight, "px;\n");
 
-		WRITE_CSS("}\n\n");		
+		WRITE_CSS("}\n\n");
 	}
-	
+
 	function WriteMenuItemIDStyleSheet(menuName, index, left, top) {
 		var menuItemIDStyleSheetName = MenuItemIDStyleSheetName(menuName, index);
-		
+
 		WRITE_CSS("#", menuItemIDStyleSheetName, " {\n");
 		WRITE_CSS("/* Unique ID for item ", index, " of menu ", menuName, " so we can set its position */\n");
 		WRITE_CSS("\tleft:", left, "px;\n");
 		WRITE_CSS("\ttop:", top, "px;\n");
 		WRITE_CSS("}\n\n");
 	}
-	
+
 	function WriteMenuItemSpanStyleSheet(menu, menuItems, menuName, isHorizontal, isFirst)
 	{
 		var menuItemSpanStyleSheetName = MenuItemSpanStyleSheetName(menuName);
 		var menuItemWidth = CalcMenuItemWidth(menu, menuItems, isFirst, isHorizontal);
-		
+
 		// The following is taken from WriteMenuItemArrowStyleSheet()
 		var arrowWidth = 8;
 		var width = menuItemWidth - arrowWidth - 4;  // Different from below because we need a one pixel space
 		if (menu.textOnly) {
 			width -= menu.menuItemPadding - menu.borderSize;
 		}
-		
+
 		WRITE_CSS(".", menuItemSpanStyleSheetName, " {\n");
 		WRITE_CSS("/* The span class definition so we can make sure that arrows and menu text in menu ", menuName, " look correct */\n");
 		WRITE_CSS("\tfloat:left;\n");
 		WRITE_CSS("\twidth:", width, "px;\n");
 		WRITE_CSS("}\n\n");
 	}
-	
+
 	function WriteMenuItemArrowStyleSheet(menu, menuItems, menuName, isHorizontal, isFirst) {
 		var menuItemArrowStyleSheetName = MenuItemArrowStyleSheetName(menuName);
 		var menuItemWidth = CalcMenuItemWidth(menu, menuItems, isFirst, isHorizontal);
 		var menuItemHeight = CalcMenuItemHeight(menu, menuItems, isFirst, isHorizontal);
 		var arrowHeight = 8;
 		var arrowWidth = 8;
-		
+
 		var arrowLeft = menuItemWidth - arrowWidth - 3;
 		if (menu.textOnly) {
 			arrowLeft -= menu.menuItemPadding - menu.borderSize;
 		}
-		
+
 		var arrowTop = menuItemHeight / 2 - arrowHeight / 2;
-		
+
 		WRITE_CSS(".", menuItemArrowStyleSheetName, " {\n");
 		WRITE_CSS("/* This class allows us to position the submenu arrows for menu ", menuName, " */\n");
 		WRITE_CSS("\tposition:absolute;\n");
@@ -1239,8 +1239,8 @@ if (doHeader) {
 		WRITE_CSS("\ttop:", arrowTop, "px;\n");
 		WRITE_CSS("}\n\n");
 	}
-	
-	function WriteMenuStyleSheet(menu, menuItems, menuOrigin, menuName, isTopLevel) {	
+
+	function WriteMenuStyleSheet(menu, menuItems, menuOrigin, menuName, isTopLevel) {
 		// Write out the menu level attributes
 		WRITE_CSS("#", menuName, " {\n");
 		WRITE_CSS("/* This class defines things about menu ", menuName, "'s div. */\n");
@@ -1262,7 +1262,7 @@ if (doHeader) {
 		var fullMenuHeight = CalcMenuHeight(menu, menuItems, isTopLevel) - borderSize;
 		if (menu.vertical || !isTopLevel) {
 			fullMenuHeight  = fullMenuHeight - borderSize;
-		}		
+		}
 		WRITE_CSS("\theight:", fullMenuHeight, "px;\n");
 		WRITE_CSS("}\n\n");
 
@@ -1278,7 +1278,7 @@ if (doHeader) {
 				WriteMenuItemStyleSheet(menu, menuItems, menuName, false, false);
 			}
 		}
-		
+
 		// Generate the IDs for the menu items (so we don't have inlined styles)
 		var currentMenuItemIndex = 0;
 		for (var counter in menuItems) {
@@ -1314,26 +1314,26 @@ if (doHeader) {
 		var hasSubmenu = false;
 		for (var j in menuItems) {
 			var menuItem = menuItems[j];
-			if (menuItem.subMenu && menuItem.subMenu.length > 0) {				
+			if (menuItem.subMenu && menuItem.subMenu.length > 0) {
 				var subMenuLeft = CalcSubMenuLeft(menu, menuItems, parentLeft, currentMenuItemIndex, isTopLevel);
 				var subMenuTop = CalcSubMenuTop(menu, menuItems, parentTop, currentMenuItemIndex, isTopLevel);
 				var subMenuOrigin = NewOrigin(subMenuLeft, subMenuTop);
 				var subMenuName = menuName + "_" + curSubMenu;
 				curSubMenu++;
-					
+
 				WriteMenuStyleSheet(menu, menuItem.subMenu, subMenuOrigin, subMenuName, false);
-				
+
 				hasSubmenu = true;
 			}
 			currentMenuItemIndex++;
 		}
-		
+
 		if( hasSubmenu ) {
 			WriteMenuItemSpanStyleSheet(menu, menuItems, menuName, !menu.vertical && isTopLevel, true);
 			WriteMenuItemArrowStyleSheet(menu, menuItems, menuName, !menu.vertical && isTopLevel, true);
 		}
 	}
-	
+
 	function WriteTopLevelMenuStyleSheet(theSlice, menu, menuItems) {
 		var topLevelMenuOrigin = CalcTopLevelMenuOrigin(menu, menuItems);
 
@@ -1342,7 +1342,7 @@ if (doHeader) {
 		WRITE_CSS("#", GetMenuContainerName(menu), " {\n");
 		WRITE_CSS("/* This ID is related to the master menu div for menu ", GetMenuContainerName(menu), " and contains the important positioning information for the menu as a whole */\n");
 		WRITE_CSS("\tposition:absolute;\n\tleft:", xOffset, "px;\n\ttop:", yOffset, "px;\n\tvisibility:hidden;\n\tz-index:300;\n}\n\n");
-				
+
 		WriteMenuStyleSheet(menu, menuItems, topLevelMenuOrigin, GetMenuName(menu), true);
 		WRITE_CSS("#", GetMenuContainerName(menu), " img {\n");
 		WRITE_CSS("/* needed for Mozilla/Camino/Netscape */\n");
@@ -1355,8 +1355,8 @@ if (doHeader) {
 		}
 		WRITE_CSS("#", GetMenuContainerName(menu), " a {\n");
 		WRITE_CSS("/* Controls the general apperance for menu ", GetMenuContainerName(menu), "'s items, including color and font */\n");
-		WRITE_CSS("\ttext-decoration:none;\n\tfont-family:", textFamily, ";\n\tfont-size:", 
-					menu.textSize, "px;\n\tcolor:", menu.textUpColor, ";\n\ttext-align:", menu.textAlignment, ";\n\tvertical-align:", 
+		WRITE_CSS("\ttext-decoration:none;\n\tfont-family:", textFamily, ";\n\tfont-size:",
+					menu.textSize, "px;\n\tcolor:", menu.textUpColor, ";\n\ttext-align:", menu.textAlignment, ";\n\tvertical-align:",
 					menu.vertAlignment, ";\n\tpadding:", menu.menuItemPadding, "px;\n");
 		if (!menu.textOnly) {
 			WRITE_CSS("\tbackground: url(\"", slices.imagesDirPath , menu.menuImagePath, "\") ", menu.cellUpColor, ";\n");
@@ -1375,7 +1375,7 @@ if (doHeader) {
 		}
 		WRITE_CSS("\tdisplay:block;\n\tposition:absolute;\n");
 		WRITE_CSS("}\n\n");
-		
+
 		// finally write out the rollover styles
 		WRITE_CSS("#", GetMenuContainerName(menu), " a:hover {\n");
 		WRITE_CSS("/* Controls the mouse over effects for menu ", GetMenuContainerName(menu), " */\n");
@@ -1387,13 +1387,13 @@ if (doHeader) {
 		}
 		WRITE_CSS("}\n");
 	}
-	
+
 	function WriteTabDepth(depth) {
 		for(var i = 0; i < depth; i++) {
 			WRITE_HTML("\t");
 		}
 	}
-	
+
 	function WriteMenu(menu, menuItems, menuName, hideOnMouseout, isVertical, isTopLevel, depth) {
 		//WriteTabDepth(depth);
 		WRITE_HTML("\t<div id=\"", menuName, "\"");
@@ -1401,18 +1401,18 @@ if (doHeader) {
 			if (!fw.xhtmlOutput){ // HTML STYLE
 				WRITE_HTML(" onMouseOut=\"");
 			} else {
-				WRITE_HTML(" onmouseout=\"");						
+				WRITE_HTML(" onmouseout=\"");
 			}
 			WRITE_HTML("MM_menuStartTimeout(", menu.hideTimeout, ");\"");
 		}
 		if (!fw.xhtmlOutput){ // HTML STYLE
 			WRITE_HTML(" onMouseOver=\"");
 		} else {
-			WRITE_HTML(" onmouseover=\"");						
+			WRITE_HTML(" onmouseover=\"");
 		}
 		WRITE_HTML("MM_menuResetTimeout();\"");
 		WRITE_HTML(">\n");
-		
+
 		// Write out menu items here
 		var firstMenuItem = true;
 		var curSubMenu = 1;
@@ -1420,7 +1420,7 @@ if (doHeader) {
 		var currentY = 0;
 		for (var i in menuItems) {
 			var menuItem = menuItems[i];
-			
+
 			//WriteTabDepth(depth);
 			WRITE_HTML("\t\t<a href=\"");
 			if (menuItem.url) {
@@ -1431,7 +1431,7 @@ if (doHeader) {
 			WRITE_HTML("\"");
 			if (menuItem.target) {
 				WRITE_HTML(" target=\"", menuItem.target, "\"");
-			}			
+			}
 			WRITE_HTML(" id=\"", MenuItemIDStyleSheetName(menuName, i), "\"");
 			WRITE_HTML(" class=\"", MenuItemStyleSheetName(menuName, !isVertical, firstMenuItem), "\"");
 
@@ -1442,11 +1442,11 @@ if (doHeader) {
 			} else {
 				currentX += currentMenuItemWidth + menu.menuItemSpacing;
 			}
-			
+
 			if (!fw.xhtmlOutput){ // HTML STYLE
 				WRITE_HTML(" onMouseOver=\"");
 			} else {
-				WRITE_HTML(" onmouseover=\"");						
+				WRITE_HTML(" onmouseover=\"");
 			}
 			WRITE_HTML("MM_menuOverMenuItem('", menuName, "'");
 			// if we have a submenu, then we need to show it
@@ -1456,31 +1456,31 @@ if (doHeader) {
 			}
 			WRITE_HTML(");\"");
 			WRITE_HTML(">\n");
-			
+
 			var strippedName = menuItem.name.substring(1, menuItem.name.length-1);
-						
+
 			// If we have a submenu, we'll want a span class to make sure that everything is aligned properly
 			// We'll also need to write out the arrow.gif
 			if (menuItem.subMenu && menuItem.subMenu.length > 0) {
 				WRITE_HTML("\t\t\t<span class=\"", MenuItemSpanStyleSheetName(menuName), "\">", strippedName, "</span>\n");
 				WRITE_HTML("\t\t\t<img src=\"", slices.menuArrowPath, "\" alt=\"\" class=\"", MenuItemArrowStyleSheetName(menuName), "\"");
 				if (!fw.xhtmlOutput){ // HTML STYLE
-					WRITE_HTML(">\n");	
+					WRITE_HTML(">\n");
 				} else { // XHTML
 					WRITE_HTML(" />\n");
 				}
 			} else {
 				WRITE_HTML("\t\t\t", strippedName, "\n");
 			}
-			
+
 			WRITE_HTML("\t\t</a>\n");
-			
+
 			firstMenuItem = false;
 		}
-		
+
 		//WriteTabDepth(depth);
 		WRITE_HTML("\t</div>\n");
-		
+
 		// go through submenus again, but write them out this time
 		curSubMenu = 1;
 		for (var j in menuItems) {
@@ -1488,28 +1488,28 @@ if (doHeader) {
 			if (menuItem.subMenu && menuItem.subMenu.length > 0) {
 				var subMenuName = menuName + "_" + curSubMenu;
 				curSubMenu++;
-					
+
 				WriteMenu(menu, menuItem.subMenu, subMenuName, hideOnMouseout, true, false, depth+1);
 			}
-		}	
+		}
 	}
-	
+
 	function WriteTopLevelMenu(menu, menuItems) {
 		WRITE_HTML("<div id=\"", GetMenuContainerName(menu), "\">\n");
-		
+
 		var depth = 0;
 		WriteMenu(menu, menuItems, GetMenuName(menu), menu.event==kEventMouseOver, menu.vertical, true, depth);
-		
+
 		WRITE_HTML("</div>\n");
 	}
-	
+
 	function WriteAllMenus() {
 		for(var j = 0; j < popupMenus.length; j++) {
 			var currentMenu = popupMenus[j];
-			
+
 			WriteTopLevelMenu(currentMenu, currentMenu.menuItems);
 		}
-	}			
+	}
 
 	if (wroteAnyMenus || popupMenus.length) {
 		WRITE_HTML("<script language=\"JavaScript1.2\" type=\"text/javascript\" src=\"" + slices.menuPath + "\"></script>\n");
@@ -1520,7 +1520,7 @@ if (doHeader) {
 	}
 
 	// Close head tag.
-	WRITE_HTML("</head>\n");	  
+	WRITE_HTML("</head>\n");
 
 	// Begin body tag. Set background color to Fireworks document canvas color.
 	WRITE_HTML("<body bgcolor=\"#", exportDoc.backgroundColor.toString(16), "\"");
@@ -1546,27 +1546,27 @@ if (doHeader) {
 		WRITE_HTML("\"");
 	}
 	WRITE_HTML(">\n");	// close the body tag.
-		
-} 	
+
+}
 
 function WriteStyleSheets(curSlices, indent, topLevel) {
 	var curCol;
 	var curRow;
 	var prevTop = 0;
 	var prevLeft = 0;
-	
+
 	// Prevent nasty nesting issues
 	if (topLevel) {
 		WRITE_HTML("<style type=\"text/css\" media=\"screen\">\n");
-		if( writeExternalCSS ) {	
+		if( writeExternalCSS ) {
 			WRITE_HTML("\t@import url(\"", exportDoc.externalCSSFileName, "\");\n");
 		}
-		
+
 		// To get around some funky netscape bug.
 		WRITE_CSS("td img {\n");
 		WRITE_CSS("/* Another Mozilla/Netscape bug with making sure our images display correctly */\n");
 		WRITE_CSS("\tdisplay: block;\n}\n\n");
-		
+
 		// Write out the HTML body's stylesheet
 		WRITE_CSS("#FWTableContainer", exportDoc.docID, " {\n");
 		WRITE_CSS("/* The master div to make sure that our popup menus get aligned correctly.  Be careful when playing with this one. */\n");
@@ -1578,9 +1578,9 @@ function WriteStyleSheets(curSlices, indent, topLevel) {
 		for (curCol = 0; curCol < curSlices.numColumns; curCol++) {
 			var curSlice = curSlices[curRow][curCol];
 			if (curSlice.skipCell) {
-				continue; 
+				continue;
 			}
-			
+
 			// Need to be recursive if we have a nested table
 			var nestedTable = curSlice.nestedTableSlices;
 			if (nestedTable) {
@@ -1593,7 +1593,7 @@ function WriteStyleSheets(curSlices, indent, topLevel) {
 			var cellName = CellName(curSlices, curRow, curCol);
 			var currentTop = curSlice.top;
 			var currentLeft = curSlice.left;
-			
+
 			if (fw.getDocumentDOM().inLaunchAndEdit == false) {
 				if (fw.getPref("HTMLEmptyCellUsesCanvasColor")) {
 					doBgColor = false; //!exportDoc.backgroundIsTransparent;
@@ -1603,7 +1603,7 @@ function WriteStyleSheets(curSlices, indent, topLevel) {
 					doBgColor = (bgColor != "#ffffff00");
 				}
 			}
-			
+
 			// Be sure to push out the popup menu style sheets
 			var currentMenu = GetMenuFromSlice(curSlice);
 			if( currentMenu ) {
@@ -1613,24 +1613,24 @@ function WriteStyleSheets(curSlices, indent, topLevel) {
 			if( curSlice.hasImagemap ) {
 				var imagemap = curSlice.imagemap;
 				for (var i = 0; i < imagemap.numberOfURLs; i++) {
-					var curImagemap = imagemap[i];					
+					var curImagemap = imagemap[i];
 					if( curImagemap ) {
 						currentMenu = GetMenuFromSlice(curImagemap);
 						if( currentMenu ) {
 							WriteTopLevelMenuStyleSheet(curImagemap, currentMenu, currentMenu.menuItems);
-						}						
+						}
 					}
 				}
 			}
 		}// end for each column
 	} // end for each row
-	
+
 	if (topLevel) {
 		WRITE_HTML("</style>\n");
 	}
 }
 
-// Needed for custom nesting		  
+// Needed for custom nesting
 var firstTable = true;
 
 // Write comment for start of table copy/paste section.
@@ -1652,9 +1652,9 @@ function WriteTable(curSlices, indent) {
 	if (curSlices.tableNested) nested = "\"1\"";
 	//<--- FWTable FWSrc="mydoc" FWPage="pagename" FWBase="basename" FWTemplate="Generic" FWDocID="890089089" FWNested="1"--->
 	var magicComment = "<!-- fwtable fwsrc=\"" + exportDoc.docSaveName + "\" fwpage=\"" + exportDoc.pagename + "\" fwbase=\"" + exportDoc.filename + "\"";
-	
+
 	magicComment  += " fwstyle=\"" + exportDoc.style + "\" fwdocid = \"" + exportDoc.docID + "\" fwnested=" + nested + " -->\n";
-	
+
 	if (needTable) {
 		if (firstTable) {
 			WRITE_HTML('<table ');
@@ -1666,7 +1666,7 @@ function WriteTable(curSlices, indent) {
 			// is off, give the table a background color based on the FIreworks document's canvas color.
 			if (!exportDoc.backgroundIsTransparent && curSlices.doSkipUndefined) {
 				WRITE_HTML("bgcolor=\"#", exportDoc.backgroundColor, "\" ");
-			} 
+			}
 
 			WRITE_HTML("border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"");
 			if (exportDoc.tablePctWidth) {
@@ -1682,8 +1682,8 @@ function WriteTable(curSlices, indent) {
 		// }
 
 
-		
-	// If shims have been specified, write shim row.	
+
+	// If shims have been specified, write shim row.
 		if (curSlices.doShimEdges) {
 			WRITE_HTML(indent+"  <tr>\n");
 			WRITE_HTML_COMMENT(" Shim row, height 1. ");
@@ -1691,19 +1691,19 @@ function WriteTable(curSlices, indent) {
 			if (!fw.xhtmlOutput){
 			// HTML STYLE
 				for (curCol = 0; curCol < curSlices.numColumns; curCol++) {
-					WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"", 
-						curSlices[0][curCol].cellWidth, "\" height=\"1\" alt=\"\"></td>\n"); 
+					WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"",
+						curSlices[0][curCol].cellWidth, "\" height=\"1\" alt=\"\"></td>\n");
 				}
-				WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"1", 
-					"\" height=\"1\" alt=\"\"></td>\n"); 
+				WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"1",
+					"\" height=\"1\" alt=\"\"></td>\n");
 			} else {
 			// XHTML STYLE
 				for (curCol = 0; curCol < curSlices.numColumns; curCol++) {
-					WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"", 
-						curSlices[0][curCol].cellWidth, "\" height=\"1\" alt=\"\" /></td>\n"); 
+					WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"",
+						curSlices[0][curCol].cellWidth, "\" height=\"1\" alt=\"\" /></td>\n");
 				}
-				WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"1", 
-					"\" height=\"1\" alt=\"\" /></td>\n"); 
+				WRITE_HTML(indent+"   <td><img src=\"", curSlices.shimPath, "\" width=\"1",
+					"\" height=\"1\" alt=\"\" /></td>\n");
 			}
 
 			WRITE_HTML(indent+"  </tr>\n");
@@ -1719,7 +1719,7 @@ function WriteTable(curSlices, indent) {
 		}
 		for (curCol = 0; curCol < curSlices.numColumns; curCol++) {
 			var curSlice = curSlices[curRow][curCol];
-			if (curSlice.skipCell) continue; 
+			if (curSlice.skipCell) continue;
 
 			if (needTable) {
 				// Write rowspan and colspan if necessary. Ex: rowspan="1" colspan="3"
@@ -1730,11 +1730,11 @@ function WriteTable(curSlices, indent) {
 				if (curSlice.columnSpan>1) {
 					WRITE_HTML(" colspan=\"", curSlice.columnSpan, "\"");
 				}
-			} 
+			}
 
 			var nestedTable = curSlice.nestedTableSlices;
 			if (nestedTable) {
-				if (needTable && !curSlice.tdTagText) { 
+				if (needTable && !curSlice.tdTagText) {
 					WRITE_HTML(">");
 				} else {
 					WRITE_HTML(" " + curSlice.tdTagText + ">");
@@ -1748,13 +1748,13 @@ function WriteTable(curSlices, indent) {
 				// } else {
 					// WRITE_HTML("left\" ");
 				// }
-				
+
 				// If the Fireworks document's canvas is not transparent and the Include undefined curSlices checkbox
 				// is off, give the table a background color based on the Fireworks document's canvas color.
 				if (!exportDoc.backgroundIsTransparent && curSlices.doSkipUndefined) {
 					WRITE_HTML("bgcolor=\"#", exportDoc.backgroundColor, "\" ");
 				}
-				
+
 				WRITE_HTML("border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"", nestedTable.width, "\">\n");
 
 				WriteTable(nestedTable, "	"+indent);
@@ -1795,7 +1795,7 @@ function WriteTable(curSlices, indent) {
 							WRITE_HTML(" " + curSlice.tdTagText + ">");
 						}
 					}
-					
+
 					// We're gonna do this with a real ghetto method.  We're just gonna look for a < and a > within the
 					// html text.  If we find both, we'll assume its a tag and the user doesn't need any additional tags.
 					// mat - 2001 Sep 12
@@ -1838,19 +1838,19 @@ function WriteTable(curSlices, indent) {
 						WRITE_HTML(" " + curSlice.tdTagText + ">");
 					}
 					var mt = fw.getPref("HTMLEmptyCellContents");
-					if (mt == kCellNbsp) WRITE_HTML("&nbsp;");	
+					if (mt == kCellNbsp) WRITE_HTML("&nbsp;");
 					if (mt == kCellShim) {
 
 						if (!fw.xhtmlOutput){
 						// HTML STYLE
-							WRITE_HTML("<img src=\"", curSlices.shimPath, 
-									"\" width=\"", curSlice.width, "\" height=\"", 
-									curSlice.height, "\" alt=\"\">"); 
+							WRITE_HTML("<img src=\"", curSlices.shimPath,
+									"\" width=\"", curSlice.width, "\" height=\"",
+									curSlice.height, "\" alt=\"\">");
 						} else {
 						// XHTML STYLE
-							WRITE_HTML("<img src=\"", curSlices.shimPath, 
-									"\" width=\"", curSlice.width, "\" height=\"", 
-									curSlice.height, "\" alt=\"\" />"); 
+							WRITE_HTML("<img src=\"", curSlices.shimPath,
+									"\" width=\"", curSlice.width, "\" height=\"",
+									curSlice.height, "\" alt=\"\" />");
 						}
 					}
 					WRITE_HTML("</td>\n");
@@ -1863,7 +1863,7 @@ function WriteTable(curSlices, indent) {
 				} else {
 					WRITE_HTML(" " + curSlice.tdTagText + ">");
 				}
-			}	
+			}
 
 			// Write link if slice has URL attached.
 			var href = "href=\"javascript:;\"";
@@ -1871,8 +1871,8 @@ function WriteTable(curSlices, indent) {
 			if (curSlice.hasHref) {
 				href = "href=\"";
 				href += curSlice.href;
-				href += "\"";				
-			} 
+				href += "\"";
+			}
 			if (curSlice.hasTargetText) {
 				href += " target=\"";
 				href += curSlice.targetText;
@@ -1886,18 +1886,18 @@ function WriteTable(curSlices, indent) {
 				if (exportDoc.backgroundLink.hasHref) {
 					href = "href=\"";
 					href += exportDoc.backgroundLink.href;
-					href += "\"";				
-				} 
+					href += "\"";
+				}
 				if (exportDoc.backgroundLink.hasTargetText) {
 					href += " target=\"";
 					href += exportDoc.backgroundLink.targetText;
 					href += "\"";
-				}								
+				}
 			}
 
 			if (slices.doDemoHTML && curSlice.downIndex>0) {
-				href = "href=\"" + slices.demoHref(curSlice.downIndex); 
-				
+				href = "href=\"" + slices.demoHref(curSlice.downIndex);
+
 				if( exportDoc.exportSettings.fileExtension != '') {
 					href += exportDoc.exportSettings.fileExtension;
 				} else {
@@ -1924,21 +1924,21 @@ function WriteTable(curSlices, indent) {
 						if (!fw.xhtmlOutput){ // HTML STYLE
 							WRITE_HTML(" onMouseOut=\"", javaOut, "\"");
 						} else {
-							WRITE_HTML(" onmouseout=\"", javaOut, "\"");						
+							WRITE_HTML(" onmouseout=\"", javaOut, "\"");
 						}
 					}
 					if (javaOver != "") {
 						if (!fw.xhtmlOutput){ // HTML STYLE
 							WRITE_HTML(" onMouseOver=\"", javaOver, "\"");
 						} else {
-							WRITE_HTML(" onmouseover=\"", javaOver, "\"");						
+							WRITE_HTML(" onmouseover=\"", javaOver, "\"");
 						}
 					}
 					if (javaClick != "") {
 						if (!fw.xhtmlOutput){ // HTML STYLE
 							WRITE_HTML(" onClick=\"", javaClick, "\"");
 						} else {
-							WRITE_HTML(" onclick=\"", javaClick, "\"");						
+							WRITE_HTML(" onclick=\"", javaClick, "\"");
 						}
 					}
 					WRITE_HTML(">");
@@ -1947,12 +1947,12 @@ function WriteTable(curSlices, indent) {
 
 			// Place image.
 			if (curSlice.hasImage) {
-				var imageName = curSlice.getFrameFileName(0); 
-				if (slices.doDemoHTML && slices.demoIndex>0 && 
+				var imageName = curSlice.getFrameFileName(0);
+				if (slices.doDemoHTML && slices.demoIndex>0 &&
 					slices.demoIndex == curSlice.downIndex) {
 					imageName = curSlice.getFrameFileName(2);
 					if (!imageName) imageName = curSlice.getFrameFileName(6);
-				} 
+				}
 				var altText = "";
 				if (curSlice.hasAltText) {
 					altText = curSlice.altText;
@@ -1965,11 +1965,11 @@ function WriteTable(curSlices, indent) {
 				var src = curSlices.imagesDirPath + imageName + curSlice.imageSuffix;
 				if (btnDownSrc) {
 					btnInitSrc = src;
-					src = btnDownSrc;	
+					src = btnDownSrc;
 				}
 
 				// Assemble info for image tag.
-				// Ex: <img name="n_03_02" src="File_03_02.gif" width="79" height="71" 
+				// Ex: <img name="n_03_02" src="File_03_02.gif" width="79" height="71"
 
 				if (!fw.xhtmlOutput){ // HTML STYLE
 					WRITE_HTML("<img name=\"", cellName, "\" src=\"",
@@ -1978,16 +1978,16 @@ function WriteTable(curSlices, indent) {
 				} else { // XHTML STYLE
 					WRITE_HTML("<img name=\"", cellName, "\" src=\"",
 						src, "\" width=\"",
-						curSlice.width,"\" height=\"", curSlice.height, "\" id=\"", cellName, "\"");					
+						curSlice.width,"\" height=\"", curSlice.height, "\" id=\"", cellName, "\"");
 				}
 
-				
+
 				// Write image map name.
 				// Ex: usemap="#base_r1_c2"
-				if (curSlice.hasImagemap) {	 
-					WRITE_HTML(" usemap=\"#m_", MapName(curSlice), "\""); 
+				if (curSlice.hasImagemap) {
+					WRITE_HTML(" usemap=\"#m_", MapName(curSlice), "\"");
 				}
-				
+
 				// Write alt text.
 				if (altText != "") {
 					WRITE_HTML(" alt=\"", altText, "\"");
@@ -2010,34 +2010,34 @@ function WriteTable(curSlices, indent) {
 
 				if (btnDown) WRITE_HTML(btnDown);
 				if (!fw.xhtmlOutput){ // HTML STYLE
-					WRITE_HTML(">");	
+					WRITE_HTML(">");
 				} else { // XHTML
 					WRITE_HTML(" />");
 				}
 			}
 			if (anchorTagOpen) {
-				WRITE_HTML("</a>");	
+				WRITE_HTML("</a>");
 			}
-			if (needTable) WRITE_HTML("</td>\n");	
+			if (needTable) WRITE_HTML("</td>\n");
 		}
-		
+
 		if (needTable) {
 			// Place shim in rightmost column of table.
 			if (curSlices.doShimEdges) {
 				/* Write the 1 pixel transparent shim. */
 				if (!fw.xhtmlOutput){ // HTML Style
 					WRITE_HTML("   <td><img src=\"",
-						curSlices.shimPath, "\" width=\"1\" height=\"", 
-						curSlices[curRow][0].cellHeight, "\" alt=\"\"></td>\n"); 
+						curSlices.shimPath, "\" width=\"1\" height=\"",
+						curSlices[curRow][0].cellHeight, "\" alt=\"\"></td>\n");
 				} else { // XHTML Style
 					WRITE_HTML("   <td><img src=\"",
-						curSlices.shimPath, "\" width=\"1\" height=\"", 
-						curSlices[curRow][0].cellHeight, "\" alt=\"\" /></td>\n"); 
-				} 
+						curSlices.shimPath, "\" width=\"1\" height=\"",
+						curSlices[curRow][0].cellHeight, "\" alt=\"\" /></td>\n");
+				}
 			}
 			WRITE_HTML(indent+"  </tr>\n");
 		}
-	}		
+	}
 	if (needTable) {
 		// Close table.
 		if (indent!="") WRITE_HTML(indent+"</table>");
@@ -2100,14 +2100,14 @@ function WriteImagemaps(curSlices, indent) {
 	for (var curRow = 0; curRow < curSlices.numRows; curRow++) {
 		for (var curCol = 0; curCol < curSlices.numColumns; curCol++) {
 			var curSlice = curSlices[curRow][curCol];
-			if (curSlice.skipCell) continue; 
+			if (curSlice.skipCell) continue;
 			var nestedTable = curSlice.nestedTableSlices;
 			if (nestedTable) {
 				WriteImagemaps(nestedTable, "	"+indent);
 				continue;
 			}
 			if (curSlice.hasImagemap) {
-				
+
 				// Write the image map.
 				if (!fw.xhtmlOutput){ // HTML STYLE
 					WRITE_HTML(indent+"<map name=\"m_", MapName(curSlice), "\">\n");
@@ -2135,7 +2135,7 @@ function WriteImagemaps(curSlices, indent) {
 					var xMap = curImagemap.numCoords ? GetXOffsetIntoImage(curSlice,curImagemap): 0;
 					var yMap = curImagemap.numCoords ? GetYOffsetIntoImage(curSlice,curImagemap): 0;
 					var gotJavascript = ProcessBehavior(CellName(curSlices,curRow,curCol),behaviors, left, top, xMap, yMap);
-	
+
 					// Write the area tag with shape definitions.
 					WRITE_HTML(indent+"<area shape=\"");
 					WRITE_HTML(curImagemap.shape); // Shapes are rect poly and circle
@@ -2145,7 +2145,7 @@ function WriteImagemaps(curSlices, indent) {
 						// polygon has n coords.
 						// rect has 2 coords, topLeft, and botomRight.
 						// circle has one coord, center; plus radius.
-						WRITE_HTML((curImagemap.xCoord(j)-curSlice.left), ",", (curImagemap.yCoord(j)-curSlice.top)); 
+						WRITE_HTML((curImagemap.xCoord(j)-curSlice.left), ",", (curImagemap.yCoord(j)-curSlice.top));
 					}
 					if (curImagemap.shape == "circle") {
 						// Write the radius for circle hotspots.
@@ -2165,7 +2165,7 @@ function WriteImagemaps(curSlices, indent) {
 						href += "\"";
 					}
 					WRITE_HTML(href);
-					
+
 					// Write alt text for hotspot.
 					var altText = "";
 					if (curImagemap.hasAltText) {
@@ -2178,7 +2178,7 @@ function WriteImagemaps(curSlices, indent) {
 						WRITE_HTML(" title=\"", altText, "\"");
 						WRITE_HTML(" alt=\"", altText, "\"");
 					} else {
-						WRITE_HTML(" alt=\"\"");					
+						WRITE_HTML(" alt=\"\"");
 					}
 
 					// Write rollover and swap image behaviors.
@@ -2186,14 +2186,14 @@ function WriteImagemaps(curSlices, indent) {
 						if (!fw.xhtmlOutput){ // HTML STYLE
 							WRITE_HTML(" onMouseOut=\"", javaOut, "\" ");
 						} else {
-							WRITE_HTML(" onmouseout=\"", javaOut, "\" ");						
+							WRITE_HTML(" onmouseout=\"", javaOut, "\" ");
 						}
 					}
 					if (javaOver != "") {
 						if (!fw.xhtmlOutput){ // HTML STYLE
 							WRITE_HTML(" onMouseOver=\"", javaOver, "\" ");
 						} else {
-							WRITE_HTML(" onmouseover=\"", javaOver, "\" ");						
+							WRITE_HTML(" onmouseover=\"", javaOver, "\" ");
 						}
 					}
 					if (javaClick != "") {
@@ -2210,7 +2210,7 @@ function WriteImagemaps(curSlices, indent) {
 						WRITE_HTML(" />\n");
 					}
 					i++;
-				} 
+				}
 				WRITE_HTML(indent+"</map>\n")
 			}
 		}
@@ -2233,7 +2233,7 @@ provided the user didn't monkey too much with the stuff inside the container
 if (exportDoc.cssPopupMenus && popupMenus.length) {
 	WRITE_HTML("<div id=\"FWTableContainer", exportDoc.docID,"\">\n");
 }
-	
+
 WriteTable(slices, "");
 
 if(!fw.xhtmlOutput) {
@@ -2244,7 +2244,7 @@ if(!fw.xhtmlOutput) {
 if (needTable) {
 	WRITE_HTML_COMMENT("   This table was automatically created with Adobe Fireworks   ");
 	WRITE_HTML_COMMENT("   http://www.adobe.com   ");
-	
+
 }
 if (needTable) {
 	WRITE_HTML("</table>\n");
