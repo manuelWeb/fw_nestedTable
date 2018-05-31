@@ -1740,7 +1740,8 @@ function WriteTable(curSlices, indent) {
 					WRITE_HTML(" " + curSlice.tdTagText + ">");
 				}
 				// Now we need to write out our table tag
-				WRITE_HTML('<table style="display: inline-table;" align=\""');
+				// WRITE_HTML('<table style="display: inline-table;" align=\""');
+				WRITE_HTML('<table align=\"');
 				if (curSlice.tableAlign) {
 					WRITE_HTML(curSlice.tableAlign, "\" ");
 				} else {
