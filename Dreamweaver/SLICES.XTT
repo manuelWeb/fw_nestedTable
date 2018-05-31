@@ -1741,12 +1741,13 @@ function WriteTable(curSlices, indent) {
 				}
 				// Now we need to write out our table tag
 				// WRITE_HTML('<table style="display: inline-table;" align=\""');
-				WRITE_HTML('<table align=\"');
-				if (curSlice.tableAlign) {
-					WRITE_HTML(curSlice.tableAlign, "\" ");
-				} else {
-					WRITE_HTML("left\" ");
-				}
+				// WRITE_HTML('<table align=\"');
+				WRITE_HTML('<table ');
+				// if (curSlice.tableAlign) {
+					// WRITE_HTML(curSlice.tableAlign, "\" ");
+				// } else {
+					// WRITE_HTML("left\" ");
+				// }
 				
 				// If the Fireworks document's canvas is not transparent and the Include undefined curSlices checkbox
 				// is off, give the table a background color based on the Fireworks document's canvas color.
