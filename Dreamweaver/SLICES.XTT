@@ -1677,9 +1677,9 @@ function WriteTable(curSlices, indent) {
 			firstTable = false;
 		}
 
-		if (needTable && indent == "") {
-			WRITE_HTML(magicComment);
-		}
+		// if (needTable && indent == "") {
+		// 	WRITE_HTML(magicComment);
+		// }
 
 
 		
